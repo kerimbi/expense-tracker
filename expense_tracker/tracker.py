@@ -1,3 +1,4 @@
+from .formatters import FORMATTERS
 from .models import Expense
 from .storage import load_expenses, save_expenses
 
@@ -31,22 +32,7 @@ class ExpenseTracker:
         return totals
 
     def export_report(self, fmt):
-        if fmt == "text":
-            lines = []
-            for i, e in enumerate(self.expenses):
-                lines.append(f"{i}. {e.date} | {e.category} | {e.description} | {e.amount}")
-            lines.append(f"TOTAL: {self.total()}")
-            return "\n".join(lines)
-        elif fmt == "csv":
-            lines = ["date,category,description,amount"]
-            for e in self.expenses:
-                lines.append(f"{e.date},{e.category},{e.description},{e.amount}")
-            return "\n".join(lines)
-        elif fmt == "markdown":
-            lines = ["| Date | Category | Description | Amount |", "|---|---|---|---|"]
-            for e in self.expenses:
-                lines.append(f"| {e.date} | {e.category} | {e.description} | {e.amount} |")
-            lines.append(f"| | | **TOTAL** | {self.total()} |")
-            return "\n".join(lines)
-        else:
+        formatter = FORMATTERS.get(fmt)
+        if formatter is None:
             return ""
+        return formatter(self.expenses, self.total())

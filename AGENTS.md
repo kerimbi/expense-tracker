@@ -16,6 +16,7 @@ JSON file (`expenses.json`). It is a learning project: no server, no network, no
 | `expense_tracker/tracker.py` | `ExpenseTracker`: add, list, delete, totals, export. Business logic lives here. |
 | `expense_tracker/models.py` | `Expense` dataclass and dict conversion. |
 | `expense_tracker/storage.py` | Load/save the JSON data file. |
+| `expense_tracker/formatters.py` | Report formatters (text / csv / markdown) — Strategy pattern. |
 | `tests/` | `pytest` tests. Each test uses a temporary data file (`tmp_path`). |
 
 Data flow: `cli.py` → `ExpenseTracker` → `storage.py` → `expenses.json`.
