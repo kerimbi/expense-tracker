@@ -1,6 +1,7 @@
 import argparse
 import sys
 
+from .storage import StorageError
 from .tracker import ExpenseTracker
 
 
@@ -27,7 +28,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         return run(args, parser)
-    except (ValueError, IndexError) as exc:
+    except (ValueError, IndexError, StorageError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
 

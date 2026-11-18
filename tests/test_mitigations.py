@@ -35,3 +35,35 @@ def test_cli_delete_negative_index_prints_error(tmp_path, monkeypatch, capsys):
     assert exit_code == 1
     assert "Error" in capsys.readouterr().err
     assert len(ExpenseTracker().list_expenses()) == 1
+
+
+# --- R2: corrupted data file silently discarded and then overwritten ----------
+
+CORRUPTED = '[{"amount": 100, "category": "food", "description": "a", "date": "2026-11-01"}, {"amount": 5}]'
+
+
+def test_corrupted_file_raises_storage_error(tmp_path):
+    from expense_tracker.storage import StorageError
+
+    path = tmp_path / "expenses.json"
+    path.write_text(CORRUPTED)
+    with pytest.raises(StorageError):
+        ExpenseTracker(path=str(path))
+
+
+def test_invalid_json_raises_storage_error(tmp_path):
+    from expense_tracker.storage import StorageError
+
+    path = tmp_path / "expenses.json"
+    path.write_text("{broken")
+    with pytest.raises(StorageError):
+        ExpenseTracker(path=str(path))
+
+
+def test_cli_does_not_overwrite_corrupted_file(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "expenses.json").write_text(CORRUPTED)
+    exit_code = main(["add", "200", "food", "b", "2026-11-02"])
+    assert exit_code == 1
+    assert "Error" in capsys.readouterr().err
+    assert (tmp_path / "expenses.json").read_text() == CORRUPTED  # original data kept
