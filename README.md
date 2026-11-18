@@ -5,21 +5,27 @@ A small command-line tool for tracking personal expenses. Data is stored in a lo
 ## Install
 
 ```
+python -m venv venv
+venv\Scripts\activate          # Windows (cmd)
+source venv/bin/activate       # macOS / Linux
 pip install -r requirements.txt
 ```
 
 ## Usage
 
 ```
-python main.py add 1500 food "lunch" 2026-11-01
-python main.py list
-python main.py summary
-python main.py delete 0
-python main.py export csv
+python -m expense_tracker.cli add 1500 food "lunch" 2026-11-01
+python -m expense_tracker.cli list
+python -m expense_tracker.cli summary
+python -m expense_tracker.cli delete 0
+python -m expense_tracker.cli export csv      # text, csv or markdown
 ```
 
-## Tests
+## Checks
 
 ```
-pytest
+python -m pytest -v
+ruff check .
 ```
+
+See `AGENTS.md` for AI-agent rules and `ACCEPTANCE_CRITERIA.md` for the acceptance criteria.
