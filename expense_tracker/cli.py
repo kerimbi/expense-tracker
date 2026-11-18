@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 from .tracker import ExpenseTracker
 
@@ -24,6 +25,14 @@ def main(argv=None):
     export.add_argument("format", help="text, csv or markdown")
 
     args = parser.parse_args(argv)
+    try:
+        return run(args, parser)
+    except (ValueError, IndexError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+
+def run(args, parser):
     tracker = ExpenseTracker()
 
     if args.command == "add":
@@ -43,7 +52,8 @@ def main(argv=None):
         print(tracker.export_report(args.format))
     else:
         parser.print_help()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

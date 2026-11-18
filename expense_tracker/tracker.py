@@ -18,6 +18,10 @@ class ExpenseTracker:
         return list(self.expenses)
 
     def delete_expense(self, index):
+        if not 0 <= index < len(self.expenses):
+            raise IndexError(
+                f"No expense with index {index} (valid: 0 to {len(self.expenses) - 1})"
+            )
         removed = self.expenses.pop(index)
         save_expenses(self.expenses, self.path)
         return removed
